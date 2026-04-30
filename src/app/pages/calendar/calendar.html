@@ -1,0 +1,65 @@
+<div class="calendar-page">
+
+  <div class="header">
+    <div class="month-tabs">
+      @for (m of months(); track m.id) {
+        <button class="month-tab" [class.active]="m.id === month()?.id" (click)="setMonth(m.id)">
+          {{ m.label }}
+        </button>
+      }
+    </div>
+    <a routerLink="/new-month" class="new-month-btn">+ month</a>
+  </div>
+
+  @if (month(); as m) {
+    <div class="grid-wrapper">
+      <table class="habit-grid">
+        <thead>
+          <tr>
+            <th class="day-col"></th>
+            @for (col of m.columns; track col.id) {
+              <th class="habit-col" [class.core]="col.core">
+                <span class="col-label">{{ col.label }}</span>
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of m.entries; track entry.day) {
+            <tr [class.today]="isToday(entry.day)"
+                [class.future]="isFuture(entry.day)"
+                [class.complete]="rowComplete(entry, m.columns)">
+              <td class="day-num"><span>{{ entry.day }}</span></td>
+              @for (col of m.columns; track col.id) {
+                <td class="check-cell" (click)="toggle(entry.day, col.id)">
+                  <div class="checkbox" [class.checked]="entry.checks[col.id]">
+                    @if (entry.checks[col.id]) {
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    }
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="footer-label">completion</td>
+            @for (col of m.columns; track col.id) {
+              <td class="footer-pct">{{ completionPct(col.id, m.entries) }}%</td>
+            }
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  } @else {
+    <div class="empty">
+      <p>No month yet.</p>
+      <a routerLink="/new-month">Create one</a>
+    </div>
+  }
+
+</div>

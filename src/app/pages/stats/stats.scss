@@ -1,0 +1,11 @@
+.stats-page { display: flex; flex-direction: column; gap: 2.5rem; max-width: 640px; }
+.page-header h1 { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 400; letter-spacing: -0.02em; }
+.month-block { display: flex; flex-direction: column; gap: 1rem; }
+.month-title { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.habit-stats { display: flex; flex-direction: column; gap: 0.6rem; }
+.stat-row { display: grid; grid-template-columns: 160px 1fr 44px 80px; align-items: center; gap: 1rem; }
+.habit-name { font-size: 13px; color: var(--text-dim); &.core { color: var(--text); } }
+.bar-wrap { height: 2px; background: var(--surface-2); border-radius: 1px; overflow: hidden; }
+.bar { height: 100%; background: var(--text); border-radius: 1px; transition: width 0.4s ease; min-width: 2px; }
+.pct-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); text-align: right; }
+.streak-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }

@@ -1,0 +1,22 @@
+<div class="stats-page">
+  <div class="page-header"><h1>stats</h1></div>
+  @for (month of months(); track month.id) {
+    <div class="month-block">
+      <div class="month-title">{{ month.label }}</div>
+      <div class="habit-stats">
+        @for (col of month.columns; track col.id) {
+          <div class="stat-row">
+            <span class="habit-name" [class.core]="col.core">{{ col.label }}</span>
+            <div class="bar-wrap">
+              <div class="bar" [style.width.%]="pct(col.id, month.id)"></div>
+            </div>
+            <span class="pct-label">{{ pct(col.id, month.id) }}%</span>
+            <span class="streak-label">
+              @if (streak(col.id, month.id) > 1) { {{ streak(col.id, month.id) }}d streak }
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

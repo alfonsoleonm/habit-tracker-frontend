@@ -1,0 +1,47 @@
+<div class="creator-page">
+
+  <div class="page-header">
+    <h1>new month</h1>
+    <p>Core habits are pre-loaded. Add any extras you want to track.</p>
+  </div>
+
+  <div class="section">
+    <label class="section-label">month</label>
+    <input class="month-input" type="month"
+      [value]="selectedMonthId()"
+      (change)="selectedMonthId.set($any($event.target).value)" />
+  </div>
+
+  <div class="section">
+    <label class="section-label">core habits <span class="badge">non-negotiable</span></label>
+    <div class="habit-list">
+      @for (h of coreHabits; track h.id) {
+        <div class="habit-item core">
+          <span class="dot"></span>{{ h.label }}
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="section">
+    <label class="section-label">custom habits</label>
+    <div class="habit-list">
+      @for (h of customColumns(); track h.id) {
+        <div class="habit-item custom">
+          <span class="dot"></span>{{ h.label }}
+          <button class="remove-btn" (click)="removeCustom(h.id)">×</button>
+        </div>
+      }
+    </div>
+    <div class="add-row">
+      <input class="add-input" placeholder="e.g. cold shower, exercise..."
+        [(ngModel)]="newLabel" (keydown.enter)="addCustom()" />
+      <button class="add-btn" (click)="addCustom()">add</button>
+    </div>
+  </div>
+
+  <button class="create-btn" (click)="create()">
+    create {{ monthLabel(selectedMonthId()) }}
+  </button>
+
+</div>
