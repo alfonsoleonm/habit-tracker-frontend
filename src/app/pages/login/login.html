@@ -1,0 +1,48 @@
+<div class="login-page">
+    <div class="card">
+
+        <div class="brand">
+            <span class="brand-title">Habit Tracker</span>
+            <span class="brand-sub">by Alfonso Leon</span>
+        </div>
+
+        @if (mode() === 'signin') {
+        <div class="fields">
+            <input class="field" type="email" placeholder="email" [(ngModel)]="email" />
+            <input class="field" type="password" placeholder="password" [(ngModel)]="password"
+                (keydown.enter)="onSignIn()" />
+        </div>
+        @if (error()) { <p class="error">{{ error() }}</p> }
+        <button class="btn-primary" (click)="onSignIn()" [disabled]="loading()">
+            {{ loading() ? 'signing in...' : 'sign in' }}
+        </button>
+        <button class="btn-ghost" (click)="mode.set('signup')">no account? sign up</button>
+        }
+
+        @if (mode() === 'signup') {
+        <div class="fields">
+            <input class="field" type="email" placeholder="email" [(ngModel)]="email" />
+            <input class="field" type="password" placeholder="password (min 8 chars)" [(ngModel)]="password"
+                (keydown.enter)="onSignUp()" />
+        </div>
+        @if (error()) { <p class="error">{{ error() }}</p> }
+        <button class="btn-primary" (click)="onSignUp()" [disabled]="loading()">
+            {{ loading() ? 'creating account...' : 'create account' }}
+        </button>
+        <button class="btn-ghost" (click)="mode.set('signin')">already have an account?</button>
+        }
+
+        @if (mode() === 'confirm') {
+        <p class="hint">Check your email for a confirmation code.</p>
+        <div class="fields">
+            <input class="field" type="text" placeholder="confirmation code" [(ngModel)]="code"
+                (keydown.enter)="onConfirm()" />
+        </div>
+        @if (error()) { <p class="error">{{ error() }}</p> }
+        <button class="btn-primary" (click)="onConfirm()" [disabled]="loading()">
+            {{ loading() ? 'confirming...' : 'confirm' }}
+        </button>
+        }
+
+    </div>
+</div>
