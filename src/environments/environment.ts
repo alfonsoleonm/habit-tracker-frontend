@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000'
+  apiUrl: 'https://dhx1irarlf.execute-api.us-east-1.amazonaws.com'
 };
