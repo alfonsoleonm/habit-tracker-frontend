@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 export interface HabitColumn {
   id: string;
@@ -20,16 +21,29 @@ export interface Month {
 
 export const CORE_HABITS: HabitColumn[] = [
   { id: 'meditation', label: 'Meditation / NSDR', core: true },
-  { id: 'journaling', label: 'Journaling',         core: true },
-  { id: 'reading',    label: 'Reading',             core: true },
-  { id: 'study',      label: 'Study',               core: true },
+  { id: 'journaling', label: 'Journaling', core: true },
+  { id: 'reading', label: 'Reading', core: true },
+  { id: 'study', label: 'Study', core: true },
 ];
 
 @Injectable({ providedIn: 'root' })
 export class HabitsService {
-  private _months = signal<Month[]>(this.mockMonths());
+  private _months = signal<Month[]>([]);
   months = this._months.asReadonly();
   activeMonth = signal<string>(this.currentMonthId());
+  private token: string | null = null;
+
+  setToken(token: string) {
+    this.token = token;
+    this.loadMonths();
+  }
+
+  private headers() {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token}`
+    };
+  }
 
   currentMonthId(): string {
     const d = new Date();
@@ -40,44 +54,49 @@ export class HabitsService {
     return this._months().find(m => m.id === id);
   }
 
-  toggle(monthId: string, day: number, colId: string) {
+  async loadMonths() {
+    const res = await fetch(`${environment.apiUrl}/months`, {
+      headers: this.headers()
+    });
+    const data = await res.json();
+    this._months.set(data);
+    if (data.length > 0) this.activeMonth.set(data[data.length - 1].id);
+  }
+
+  async toggle(monthId: string, day: number, colId: string) {
+    const month = this.getMonth(monthId);
+    if (!month) return;
+    const entry = month.entries.find(e => e.day === day);
+    if (!entry) return;
+    const newValue = !entry.checks[colId];
+
+    // optimistic update
     this._months.update(months =>
       months.map(m => {
         if (m.id !== monthId) return m;
         const entries = m.entries.map(e => {
           if (e.day !== day) return e;
-          return { ...e, checks: { ...e.checks, [colId]: !e.checks[colId] } };
+          return { ...e, checks: { ...e.checks, [colId]: newValue } };
         });
         return { ...m, entries };
       })
     );
-    // TODO: PATCH /api/months/{monthId}/days/{day}
+
+    await fetch(`${environment.apiUrl}/months/${monthId}/days/${day}`, {
+      method: 'PATCH',
+      headers: this.headers(),
+      body: JSON.stringify({ colId, value: newValue })
+    });
   }
 
-  createMonth(id: string, label: string, customColumns: HabitColumn[]) {
-    const [y, mo] = id.split('-').map(Number);
-    const daysInMonth = new Date(y, mo, 0).getDate();
-    const columns = [...CORE_HABITS, ...customColumns];
-    const entries: DayEntry[] = Array.from({ length: daysInMonth }, (_, i) => ({
-      day: i + 1,
-      checks: Object.fromEntries(columns.map(c => [c.id, false]))
-    }));
-    this._months.update(m => [...m, { id, label, columns, entries }]);
-    // TODO: POST /api/months
-  }
-
-  private mockMonths(): Month[] {
-    const id = this.currentMonthId();
-    const d = new Date();
-    const label = d.toLocaleString('default', { month: 'long', year: 'numeric' });
-    const daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-    const columns = [...CORE_HABITS];
-    const entries: DayEntry[] = Array.from({ length: daysInMonth }, (_, i) => ({
-      day: i + 1,
-      checks: Object.fromEntries(
-        columns.map(c => [c.id, Math.random() > 0.4 && i + 1 < d.getDate()])
-      )
-    }));
-    return [{ id, label, columns, entries }];
+  async createMonth(id: string, label: string, customColumns: HabitColumn[]) {
+    const res = await fetch(`${environment.apiUrl}/months`, {
+      method: 'POST',
+      headers: this.headers(),
+      body: JSON.stringify({ id, label, customColumns })
+    });
+    const month = await res.json();
+    this._months.update(m => [...m, month]);
+    this.activeMonth.set(month.id);
   }
 }

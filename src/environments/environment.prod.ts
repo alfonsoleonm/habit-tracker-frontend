@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '' // paste your Lambda Function URL here after deploy
+  apiUrl: 'https://dhx1irarlf.execute-api.us-east-1.amazonaws.com'
 };
