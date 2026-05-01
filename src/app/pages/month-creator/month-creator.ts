@@ -45,9 +45,9 @@ export class MonthCreatorComponent {
     this.customColumns.update(cols => cols.filter(c => c.id !== id));
   }
 
-  create() {
+  async create() {
     const id = this.selectedMonthId();
-    this.svc.createMonth(id, this.monthLabel(id), this.customColumns());
+    await this.svc.createMonth(id, this.monthLabel(id), this.customColumns());
     this.router.navigate(['/calendar']);
   }
 }

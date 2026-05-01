@@ -96,7 +96,8 @@ export class HabitsService {
       body: JSON.stringify({ id, label, customColumns })
     });
     const month = await res.json();
-    this._months.update(m => [...m, month]);
+    await this.loadMonths();
     this.activeMonth.set(month.id);
   }
+
 }
