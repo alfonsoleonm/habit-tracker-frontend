@@ -100,4 +100,14 @@ export class HabitsService {
     this.activeMonth.set(month.id);
   }
 
+  async deleteMonth(id: string) {
+    await fetch(`${environment.apiUrl}/months/${id}`, {
+      method: 'DELETE',
+      headers: this.headers()
+    });
+    this._months.update(months => months.filter(m => m.id !== id));
+    const remaining = this._months();
+    if (remaining.length > 0) this.activeMonth.set(remaining[remaining.length - 1].id);
+  }
+
 }

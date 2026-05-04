@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HabitsService, DayEntry } from '../../services/habits';
@@ -18,8 +18,12 @@ export class CalendarComponent {
 
   month = computed(() => this.svc.getMonth(this.svc.activeMonth()));
   months = computed(() => this.svc.months());
+  confirmDelete = signal<boolean>(false);
 
-  setMonth(id: string) { this.svc.activeMonth.set(id); }
+  setMonth(id: string) {
+    this.svc.activeMonth.set(id);
+    this.confirmDelete.set(false);
+  }
 
   toggle(day: number, colId: string) {
     const m = this.month();
@@ -43,5 +47,23 @@ export class CalendarComponent {
 
   rowComplete(entry: DayEntry, columns: any[]): boolean {
     return columns.every(c => entry.checks[c.id]);
+  }
+
+  streak(colId: string, entries: DayEntry[]): number {
+    const today = this.today;
+    let streak = 0;
+    for (let d = today; d >= 1; d--) {
+      const entry = entries.find(e => e.day === d);
+      if (entry?.checks[colId]) streak++;
+      else break;
+    }
+    return streak;
+  }
+
+  async deleteMonth() {
+    const m = this.month();
+    if (!m) return;
+    await this.svc.deleteMonth(m.id);
+    this.confirmDelete.set(false);
   }
 }

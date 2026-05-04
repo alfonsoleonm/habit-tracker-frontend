@@ -60,3 +60,15 @@ nav {
     }
   }
 }
+
+.signout {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  transition: color var(--transition);
+  padding: 0;
+
+  &:hover {
+    color: var(--text);
+  }
+}
