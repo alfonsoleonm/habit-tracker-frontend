@@ -6,6 +6,8 @@ nav {
   border-bottom: 1px solid var(--border);
   max-width: 1100px;
   margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .logo {
@@ -18,8 +20,8 @@ nav {
   font-family: var(--font-mono);
   font-size: 0.9rem;
   font-weight: 500;
-  letter-spacing: -0.02em;
   color: var(--text);
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 
@@ -33,7 +35,8 @@ nav {
 .links {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 
   a {
     font-size: 13px;
@@ -70,5 +73,15 @@ nav {
 
   &:hover {
     color: var(--text);
+  }
+}
+
+@media (max-width: 600px) {
+  nav {
+    padding: 1rem;
+  }
+
+  .links {
+    gap: 1rem;
   }
 }

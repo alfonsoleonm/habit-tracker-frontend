@@ -31,6 +31,9 @@
           @for (col of m.columns; track col.id) {
           <th class="habit-col" [class.core]="col.core">
             <span class="col-label">{{ col.label }}</span>
+            @if (streak(col.id, m.entries) > 0) {
+            <span class="col-streak">{{ streak(col.id, m.entries) }}d</span>
+            }
           </th>
           }
         </tr>

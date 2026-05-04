@@ -74,3 +74,11 @@ input {
 ::selection {
   background: #ffffff22;
 }
+
+@media (max-width: 768px) {
+
+  html,
+  body {
+    font-size: 13px;
+  }
+}
